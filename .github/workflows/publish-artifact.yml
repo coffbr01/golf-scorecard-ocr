@@ -34,6 +34,6 @@ jobs:
 
     - name: Publish to Maven Repository
       env:
-        GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ github.token }}
       run: ./gradlew clean build publish
