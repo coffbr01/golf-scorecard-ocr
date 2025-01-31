@@ -1,0 +1,74 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    implementation 'org.slf4j:slf4j-api:2.0.16'
+    implementation 'ch.qos.logback:logback-classic:1.5.16'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.36'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'Golf Scorecard OCR'
+                description = 'Reads golf scorecards and returns structured data'
+                url = 'https://github.com/coffbr01/golf-scorecard-ocr'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'coffbr01'
+                        name = 'Brien Coffield'
+                        email = 'coffbr01@gmail.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:github.com/coffbr01/golf-scorecard-ocr.git'
+                    developerConnection = 'scm:git:ssh://github.com:coffbr01/golf-scorecard-ocr.git'
+                    url = 'https://github.com/coffbr01/golf-scorecard-ocr'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/coffbr01/golf-scorecard-ocr")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
