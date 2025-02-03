@@ -16,6 +16,8 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
 
+    implementation 'com.azure:azure-ai-documentintelligence:1.0.0'
+
     testCompileOnly 'org.projectlombok:lombok:1.18.36'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
 

@@ -7,7 +7,5 @@ import lombok.Getter;
 @Getter
 public class ScorecardConfig {
     private String url;
-    private String model;
     private String apiKey;
-    private int maxTokens;
 }
