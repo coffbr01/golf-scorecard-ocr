@@ -1,33 +1,36 @@
 package me.bcoffield.golf.scorecard.ocr;
 
-import java.io.BufferedInputStream;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class ImageUtil {
-    /**
-     * Converts an InputStream containing image data to a byte array
-     *
-     * @param inputStream the input stream of the image file
-     * @return the image bytes
-     * @throws IOException if an I/O error occurs while reading from the stream
-     */
-    public static byte[] convertImageToBytes(InputStream inputStream) throws IOException {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)) {
 
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-
-            // Read from the input stream and write to the output stream
-            while ((bytesRead = bufferedInputStream.read(buffer)) != -1) {
-                byteArrayOutputStream.write(buffer, 0, bytesRead);
-            }
-
-            // Convert the binary data to Base64 string
-            return byteArrayOutputStream.toByteArray();
-        }
+    private static BufferedImage resizeImage(BufferedImage originalImage) {
+        int w = originalImage.getWidth();
+        int h = originalImage.getHeight();
+        // We want the new one to be 1000 wide.
+        double scaleFactor = (double) 1000 / w;
+        int targetWidth = (int) (w * scaleFactor);
+        int targetHeight = (int) (h * scaleFactor);
+        Image resultingImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_DEFAULT);
+        BufferedImage outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+        return outputImage;
     }
 
+    private static byte[] convertImageToByteArray(BufferedImage image) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    public static byte[] resizeAndGetBytes(InputStream imageIS) throws IOException {
+        BufferedImage bufferedImage = ImageIO.read(imageIS);
+        BufferedImage scaledImage = ImageUtil.resizeImage(bufferedImage);
+        return convertImageToByteArray(scaledImage);
+    }
 }
